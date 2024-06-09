@@ -1,0 +1,114 @@
+{% extends 'layout/base.html' %}
+{% block title %}
+Step 1
+{% endblock %}
+{% block content %}
+<div class="relative min-h-screen flex items-center justify-center bg-[#202225] py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover relative items-center">
+    <div class="sm:max-w-7xl w-full p-10 bg-[#36393F] bg-opacity-75 rounded shadow-xl">
+        <div class="text-center">
+            <h2 class="mt-5 text-3xl font-bold text-[#9CA3AF]">
+                STEP 3
+            </h2>
+            <p class="mt-2 text-sm text-[#9CA3AF]">
+                Pilih kolom yang ingin dihapus dari file CSV
+            </p>
+        </div>
+        <div class="flex flex-col mt-8">
+            <form action="dropcolumn" method="post" class="flex flex-col items-center">
+                <input type="text" name="model" value="{{ model }}" hidden>
+                <input type="text" name="nilaik" value="{{ nilaik }}" hidden>
+                <input type="text" name="file" value="{{ file }}" hidden>
+                <div class="w-full mb-4">
+                    <label class="text-sm font-bold text-[#9CA3AF] tracking-wide">Pilih Kolom</label>
+                    <select name="column" class="w-full mt-2 bg-gray-800 border border-gray-600 rounded px-4 py-2 text-[#9CA3AF] focus:outline-none focus:border-indigo-500">
+                        {% for head in header %}
+                        <option value="{{ head }}">{{ head }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="flex justify-between w-full">
+                    <button type="button" class="w-1/2 bg-red-500 text-gray-100 px-4 py-2 rounded-full tracking-wide font-semibold focus:outline-none focus:shadow-outline hover:bg-red-600 shadow-lg cursor-pointer transition ease-in duration-300 mr-2" onclick="confirmDropColumn()">
+                        Drop Column
+                    </button>
+                    <button type="button" class="w-1/2  bg-blue-500 text-gray-100 px-4 py-2 rounded-full tracking-wide font-semibold focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg cursor-pointer transition ease-in duration-300 ml-2" onclick="confirmNextStep()">
+                        Next Step
+                    </button>
+                </div>
+            </form>
+            <div class="w-full mt-8 overflow-auto max-h-96 border border-gray-600 p-4 rounded bg-gray-800 text-[#9CA3AF] shadow-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-700">
+                        <tr>
+                            {% for head in header %}
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ head|truncate(20, True) }}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="bg-gray-800 divide-y divide-gray-700">
+                        {% for row in body %}
+                        <tr>
+                            {% for cell in row %}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ cell }}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function confirmNextStep() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Apakah anda yakin ingin melanjutkan ke tahap berikutnya?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, proceed!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                nextStep();
+            }
+        });
+    }
+
+    function nextStep() {
+        let params = new URLSearchParams(window.location.search);
+        let model = params.get("model");
+        let file = params.get("file");
+        let nilaik = params.get("nilaik");
+        let newUrl =
+            "/process?model=" + model + "&file=" + file + "&nilaik=" + nilaik;
+        window.location.href = newUrl;
+    }
+
+    function confirmDropColumn() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Apakah anda yakin ingin menghapus kolom ini?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, drop it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                dropColumn();
+            }
+        });
+    }
+
+    function dropColumn() {
+        let form = document.querySelector("form");
+        form.action = "dropcolumn";
+        form.submit();
+    }
+</script>
+{% endblock %}

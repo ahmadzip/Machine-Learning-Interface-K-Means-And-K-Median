@@ -1,0 +1,150 @@
+{% extends 'layout/base.html' %}
+{% block title %}
+Step 1
+{% endblock %}
+{% block content %}
+<div class="relative min-h-screen flex items-center justify-center bg-[#202225] py-12 px-4 sm:px-6 lg:px-8 bg-no-repeat bg-cover relative items-center">
+    <div class="sm:max-w-lg w-full p-10 bg-[#36393F] bg-opacity-75 rounded shadow-xl">
+        <div class=" text-center">
+            <h2 class="mt-5 text-3xl font-bold text-[#9CA3AF]">
+                STEP 1
+            </h2>
+            <p class="mt-2 text-sm text-[#9CA3AF]">
+                Pilih model dan upload csv dan isi beberapa parameter yang diperlukan
+        </div>
+        <form class="mt-8 space-y-3" action="uploadfile" method="post" enctype="multipart/form-data" id="form">
+            <div class="grid grid-cols-1 space-y-2">
+                <label class="text-sm font-bold text-[#9CA3AF] tracking-wide">Select Model</label>
+                <select class="w-full mt-2 bg-gray-800 border border-gray-600 rounded px-4 py-2 text-[#9CA3AF] focus:outline-none focus:border-indigo-500" name="model">
+                    <option value="0">Select Model</option>
+                    <option value="1">k-Means</option>
+                    <option value="2">Median</option>
+                </select>
+                <label class="text-sm font-bold text-[#9CA3AF] tracking-wide">Nilai K</label>
+                <input class="w-full mt-2 bg-gray-800 border border-gray-600 rounded px-4 py-2 text-[#9CA3AF] focus:outline-none focus:border-indigo-500" type="number" name="nilaik" placeholder="Masukan Nilai K">
+            </div>
+            <div class="grid grid-cols-1 space-y-2">
+                <label class="text-sm font-bold text-[#9CA3AF] tracking-wide">Upload CSV</label>
+                <div class="flex items-center justify-center w-full">
+                    <label class="flex flex-col rounded-lg border-4 border-dashed border-[#1F2937] w-full h-60 p-10 group text-center" id="dropzone">
+                        <div class="h-full w-full text-center flex flex-col items-center justify-center items-center  ">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-[#9CA3AF]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <p id="fileName" class="pointer-none text-[#9CA3AF]">
+                                <span class="text-sm">Drag and drop</span> file di sini <br />
+                                atau <a href="#" id="fileSelect" class="text-[#9CA3AF] underline">klik untuk memilih file</a> dari komputer Anda
+                            </p>
+                            <p id="notif" class="pointer-none text-[#9CA3AF] text-xs hidden">Lakukan ulang untuk mengganti file</p>
+                        </div>
+                        <input type="file" class="hidden" accept=".csv" name="file" id="file">
+                    </label>
+                </div>
+            </div>
+            <p class="text-sm text-[#9CA3AF]">
+                <span>File type: csv</span>
+            </p>
+            <div>
+                <button id="submit" type="button" class="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4  rounded-full tracking-wide font-semibold  focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg cursor-pointer transition ease-in duration-300">
+                    Upload
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    let dropzone = document.getElementById("dropzone");
+    let fileInput = document.getElementById("file");
+
+    dropzone.addEventListener(
+        "dragenter",
+        function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        },
+        false
+    );
+
+    dropzone.addEventListener(
+        "dragover",
+        function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+        },
+        false
+    );
+
+    dropzone.addEventListener(
+        "drop",
+        function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            let dt = e.dataTransfer;
+            let files = dt.files;
+
+            handleFiles(files);
+        },
+        false
+    );
+
+    function handleFiles(files) {
+        if (!files.length) {
+            alert("No file selected!");
+            return;
+        }
+        fileInput.files = files;
+        document.getElementById("fileName").textContent =
+            "File uploaded: " + files[0].name;
+        document.getElementById("notif").classList.remove("hidden");
+
+    }
+    if (fileInput) {
+        fileInput.addEventListener("change", function () {
+            document.getElementById("fileName").textContent =
+                "File uploaded: " + this.files[0].name;
+            document.getElementById("notif").classList.remove("hidden");
+        });
+    }
+    let submitButton = document.getElementById("submit");
+    let model = document.querySelector('select[name="model"]');
+    let nilaik = document.querySelector('input[name="nilaik"]');
+    let file = document.getElementById("file");
+    submitButton.addEventListener("click", function (event) {
+        if (model.value == 0) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Silahkan pilih model!",
+            });
+        } else if (!nilaik.value) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Silahkan isi nilai K!",
+            });
+        } else if (nilaik.value == "1") {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Nilai K tidak boleh kurang dari 1!",
+            });
+        } else if (!file.files[0]) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Silahkan upload file!",
+            });
+        } else if (parseInt(nilaik.value) < 1) {
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Nilai K tidak boleh kurang dari 1!",
+            });
+        } else {
+            submitButton.type = "submit";
+        }
+    });
+</script>
+
+{% endblock %}

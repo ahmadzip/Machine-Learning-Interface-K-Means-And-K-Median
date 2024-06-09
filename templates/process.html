@@ -1,0 +1,190 @@
+{% extends 'layout/base.html' %}
+{% block title %}
+Process
+{% endblock %}
+{% block content %}
+<div class="relative min-h-screen flex items-center justify-center bg-[#202225] py-12 px-4 sm:px-6 lg:px-8">
+    <div class="w-full max-w-7xl p-10 bg-[#36393F] bg-opacity-75 rounded shadow-xl">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-[#9CA3AF]">Hasil Proses</h1>
+            <p class="mt-2 text-sm text-[#9CA3AF]">Hasil analisis data menggunakan model {{ model }}</p>
+        </div>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 items-start">
+            <div class="space-y-4">
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-[#9CA3AF]">Hasil Analisis</h2>
+                    <p class="text-sm text-[#9CA3AF]">Hasil analisis data menggunakan model <strong class="text-[#4F46E5]">{% if model == 2 %} K-Median {% else %} K-Means {% endif %}</strong> dengan nilai K = <strong class="text-[#4F46E5]">{{ nilaik }}</strong> <br> Dengan akurasi sebesar <strong class="text-[#4F46E5]">{{ akurasi }}</strong> dan kerekatan sebesar <strong class="text-[#4F46E5]">{{ kerekatan }}</strong></p>
+                </div>
+                <div role="alert" class="border border-blue-800 rounded-b">
+                    <div class="bg-[#303438] text-[#9CA3AF] font-bold rounded-t px-4 py-2">
+                        Parameter
+                    </div>
+                    <div class="flex flex-col sm:flex-row justify-between items-start border border-t-0 border-[#303438] rounded-b bg-[#36393F] px-4 py-3 text-[#9CA3AF]">
+                        <div>
+                            <p><strong>Model:</strong> {% if model == 2 %} K-Median {% else %} K-Means {% endif %}</p>
+                            <p><strong>Nilai K:</strong> {{ nilaik }}</p>
+                        </div>
+                        <button class="bg-blue-800 text-[#FFF] font-bold rounded px-4 py-2 mt-2 sm:mt-0" onclick="modal()">Ubah Parameter</button>
+                    </div>
+                </div>
+                <div role="alert" class="border border-green-800 rounded-b">
+                    <div class="bg-[#303438] text-[#9CA3AF] font-bold rounded-t px-4 py-2">
+                        Hasil
+                    </div>
+                    <div class="flex justify-between items-start border border-t-0 border-[#303438] rounded-b bg-[#36393F] px-4 py-3 text-[#9CA3AF]">
+                        <div>
+                            <p><strong>Akurasi:</strong> {{ akurasi }}</p>
+                            <p><strong>Kerekatan:</strong> {{ kerekatan }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-start mt-4 md:mt-0">
+                    <div class="space-y-4">
+                        <label class="text-sm font-bold text-[#9CA3AF] tracking-wide">Pilih Label Y</label>
+                        <select name="labelY" class="w-full mt-2 bg-gray-800 border border-gray-600 rounded px-4 py-2 text-[#9CA3AF] focus:outline-none focus:border-indigo-500">
+                            {% for head in header %}
+                            <option value="{{ loop.index0 }}">{{ head }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="space-y-4">
+                        <label class="text-sm font-bold text-[#9CA3AF] tracking-wide">Pilih Label X</label>
+                        <select name="LabelX" class="w-full mt-2 bg-gray-800 border border-gray-600 rounded px-4 py-2 text-[#9CA3AF] focus:outline-none focus:border-indigo-500">
+                            {% for head in header %}
+                            <option value="{{ loop.index0 }}">{{ head }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="tracking-wide h-5"></div>
+                        <button id="changelabel" type="button" class="w-full bg-blue-500 text-gray-100 p-2 rounded-full tracking-wide font-semibold focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg cursor-pointer transition ease-in duration-300">Tampilkan Grafik</button>
+                    </div>
+                </div>
+                <div class="flex items-start justify-center">
+                    <img src="{{ url_for('static', filename=path) }}" alt="Hasil Analisis" class="rounded-lg shadow-md border border-gray-700 w-full h-auto object-contain">
+                </div>
+            </div>
+        </div>
+        <div class="space-y-4">
+            <h2 class="text-2xl font-bold text-[#9CA3AF]">Dataset</h2>
+            <div class="overflow-x-auto max-h-96 border border-gray-600 rounded text-[#9CA3AF] shadow-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-[#36393F]">
+                        <tr>
+                            {% for head in header %}
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ head|truncate(20, True) }}
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="bg-[#36393F] divide-y divide-gray-700">
+                        {% for row in body %}
+                        <tr>
+                            {% for cell in row %}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300" style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                {{ cell }}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    function modal() {
+        Swal.fire({
+            title: 'Ubah Parameter',
+            html: `<form id="modalForm" class="w-full max-w-md mx-auto bg-[#36393F] shadow-lg rounded px-8 pt-6 pb-8 mb-4">
+            <input type="hidden" name="model" value="{{ model }}">
+            <input type="hidden" name="file" value="{{ file }}">
+            <input type="hidden" name="nilaik" value="{{ nilaik }}">
+            
+            <div class="mb-4">
+                <label class="block text-[#9CA3AF] text-sm font-bold mb-2" for="model">Model</label>
+                <select class="text-base p-2 border border-[#9CA3AF] rounded-lg focus:outline-none focus:border-indigo-500 appearance-none w-full bg-[#202225]" name="model" id="model">
+                    <option value="1" {% if model == 1 %} selected {% endif %}>k-Means</option>
+                    <option value="2" {% if model == 2 %} selected {% endif %}>Median</option>
+                </select>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-[#9CA3AF] text-sm font-bold mb-2" for="nilaik">Nilai K</label>
+                <input class="text-base p-2 border border-[#9CA3AF] rounded-lg focus:outline-none focus:border-indigo-500 w-full bg-[#202225]" type="number" name="nilaik" value="{{ nilaik }}" id="nilaik" placeholder="Masukkan Nilai K">
+            </div>
+            
+            <div class="flex items-center justify-between">
+                <button type="button" onclick="submitModalForm()" class="bg-[#4F46E5] hover:bg-[#4338CA] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Ubah
+                </button>
+            </div>
+        </form>
+        `,
+            showCloseButton: true,
+            showConfirmButton: false,
+        });
+    }
+
+    function submitModalForm() {
+        let form = document.getElementById('modalForm');
+        let new_nilaik = document.getElementById('nilaik').value;
+
+        if (parseInt(new_nilaik) === 1) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan',
+                text: 'Nilai K tidak boleh 1!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    modal();
+                }
+            });
+        } else {
+            let formData = new FormData(form);
+            let model = formData.get('model');
+            let file = formData.get('file');
+            let nilaik = formData.get('nilaik');
+            let url;
+
+            if (!formData.get('fitur1') && !formData.get('fitur2')) {
+                url = "/process?model=" + model + "&file=" + file + "&nilaik=" + new_nilaik;
+            } else {
+                let fitur1 = formData.get('fitur1');
+                let fitur2 = formData.get('fitur2');
+                url = "/process?model=" + model + "&file=" + file + "&nilaik=" + new_nilaik + "&fitur1=" + fitur1 + "&fitur2=" + fitur2;
+            }
+            window.location.href = url;
+        }
+    }
+
+    document.getElementById('changelabel').addEventListener('click', function () {
+        let LabelX = document.querySelector('select[name="LabelX"]').value;
+        let labelY = document.querySelector('select[name="labelY"]').value;
+        let params = new URLSearchParams(window.location.search);
+        let model = params.get('model');
+        let file = params.get('file');
+        let nilaik = params.get('nilaik');
+        let newUrl = '/process?model=' + model + '&file=' + file + '&nilaik=' + nilaik + '&fitur1=' + LabelX + '&fitur2=' + labelY;
+        window.location.href = newUrl;
+    });
+
+    if (window.location.search.includes('fitur1') && window.location.search.includes('fitur2')) {
+        let params = new URLSearchParams(window.location.search);
+        let LabelX = params.get('fitur1');
+        let labelY = params.get('fitur2');
+        document.querySelector('select[name="LabelX"]').value = LabelX;
+        document.querySelector('select[name="labelY"]').value = labelY;
+    }
+</script>
+
+{% endblock %}

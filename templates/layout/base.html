@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sweetalert2.css') }}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src=" https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</head>
+
+<body>
+    <a id="homebtn" href="/" class=" fixed top-0 left-0 m-4 text-gray-300 hover:text-gray-400 z-10 p-2 rounded-full bg-gray-800 bg-opacity-50 hover:bg-opacity-75">
+        <i class="fas fa-home"></i>
+    </a>
+    {% block content %}
+
+
+    {% endblock %}
+</body>
+
+</html>

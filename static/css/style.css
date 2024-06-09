@@ -1,0 +1,25 @@
+/* Scrollbar Styling */
+/* source: https://scottspence.com/posts/change-scrollbar-color-tailwind-css */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #ffffff #36393f;
+}
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 15px;
+}
+*::-webkit-scrollbar-track {
+  background: #36393f;
+  border-radius: 5px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #ffffff;
+  border-radius: 14px;
+  border: 3px solid #36393f;
+}
+
+.has-mask {
+  position: absolute;
+  clip: rect(10px, 150px, 130px, 10px);
+}
