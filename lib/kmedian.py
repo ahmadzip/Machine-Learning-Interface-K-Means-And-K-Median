@@ -50,18 +50,21 @@ def k_median_clustering(file_path, k, fitur1_index=0, fitur2_index=1):
     
     sns.set_style("darkgrid")
     plt.figure(figsize=(10, 6))
+    plt.rcParams['text.color'] = 'white'
+    plt.rcParams['axes.labelcolor'] = 'white'
+    plt.rcParams['xtick.color'] = 'white'
+    plt.rcParams['ytick.color'] = 'white'
     scatter = plt.scatter(X[:, fitur1_index], X[:, fitur2_index], c=labels, s=50, cmap='viridis', edgecolors='black', linewidth=1, alpha=0.75)
     plt.scatter(centroids[:, fitur1_index], centroids[:, fitur2_index], c='red', s=200, alpha=0.75, edgecolors='black')
     plt.xlabel(feature_columns[fitur1_index], fontsize=12)
     plt.ylabel(feature_columns[fitur2_index], fontsize=12)
     plt.title(f'K-Median Clustering (Nilai K={k})', fontsize=14)
     plt.colorbar(scatter)
-
     akurasi = int(akurasi*100)
     kerekatan = int(kerekatan*100)
     namefiletime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     path = 'img/kmedian'+namefiletime+'.png'
-    plt.savefig('static/'+path)
+    plt.savefig('static/'+path, transparent=True)
     return {'akurasi':akurasi, 'kerekatan':kerekatan, 'path':path}
 
 

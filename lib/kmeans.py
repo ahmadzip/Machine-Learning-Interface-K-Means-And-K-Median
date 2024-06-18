@@ -43,9 +43,11 @@ def kmeans_and_logistic_regression(file_path, k, fitur1_index=1, fitur2_index=0)
 
     akurasi = accuracy_score(y_test, y_pred)
 
-  
-    sns.set_style("darkgrid")
     plt.figure(figsize=(10, 6))
+    plt.rcParams['text.color'] = 'white'
+    plt.rcParams['axes.labelcolor'] = 'white'
+    plt.rcParams['xtick.color'] = 'white'
+    plt.rcParams['ytick.color'] = 'white'
     scatter = plt.scatter(X[:, fitur1_index], X[:, fitur2_index], c=labels, s=50, cmap='viridis', edgecolors='black', linewidth=1, alpha=0.75)
     plt.scatter(centers[:, fitur1_index], centers[:, fitur2_index], c='red', s=200, alpha=0.75, edgecolors='black')
     plt.xlabel(feature_columns[fitur1_index], fontsize=12)
@@ -54,7 +56,7 @@ def kmeans_and_logistic_regression(file_path, k, fitur1_index=1, fitur2_index=0)
     plt.colorbar(scatter)
     namefiletime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     path = 'img/kmeans'+namefiletime+'.png'
-    plt.savefig('static/'+path)
+    plt.savefig('static/'+path, transparent=True)
     kerekatan = int(kerekatan*100)
     akurasi = int(akurasi*100)
     return {'akurasi':akurasi, 'kerekatan':kerekatan, 'path':path}

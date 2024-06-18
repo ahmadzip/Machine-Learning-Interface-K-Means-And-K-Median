@@ -64,8 +64,9 @@ def proses():
             kmeans = kmeans_and_logistic_regression(file, int(nilaik))
 
         return render_template('process.html', akurasi=kmeans['akurasi'], kerekatan=kmeans['kerekatan'], path=kmeans['path'], header=header, body=body, model=model, file=file, nilaik=nilaik)
-
+    
     elif model == '2':
+        print(nilaik)
         datacsv = pd.read_csv(file)
         header = datacsv.columns
         body = datacsv.values

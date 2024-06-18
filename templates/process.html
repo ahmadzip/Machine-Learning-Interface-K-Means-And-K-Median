@@ -16,7 +16,7 @@ Process
             <div class="space-y-4">
                 <div class="space-y-4">
                     <h2 class="text-2xl font-bold text-[#9CA3AF]">Hasil Analisis</h2>
-                    <p class="text-sm text-[#9CA3AF]">Hasil analisis data menggunakan model <strong class="text-[#4F46E5]">{% if model == 2 %} K-Median {% else %} K-Means {% endif %}</strong> dengan nilai K = <strong class="text-[#4F46E5]">{{ nilaik }}</strong> <br> Dengan akurasi sebesar <strong class="text-[#4F46E5]">{{ akurasi }}</strong> dan kerekatan sebesar <strong class="text-[#4F46E5]">{{ kerekatan }}</strong></p>
+                    <p class="text-sm text-[#9CA3AF]">Hasil analisis data menggunakan model <strong class="text-[#4F46E5]">{% if model == "2" %} K-Median {% else %} K-Means {% endif %}</strong> dengan nilai K = <strong class="text-[#4F46E5]">{{ nilaik }}</strong> <br> Dengan akurasi sebesar <strong class="text-[#4F46E5]">{{ akurasi }}</strong> dan kerekatan sebesar <strong class="text-[#4F46E5]">{{ kerekatan }}</strong></p>
                 </div>
                 <div role="alert" class="border border-blue-800 rounded-b">
                     <div class="bg-[#303438] text-[#9CA3AF] font-bold rounded-t px-4 py-2">
@@ -24,7 +24,7 @@ Process
                     </div>
                     <div class="flex flex-col sm:flex-row justify-between items-start border border-t-0 border-[#303438] rounded-b bg-[#36393F] px-4 py-3 text-[#9CA3AF]">
                         <div>
-                            <p><strong>Model:</strong> {% if model == 2 %} K-Median {% else %} K-Means {% endif %}</p>
+                            <p><strong>Model:</strong> {% if model == "2" %} K-Median {% else %} K-Means {% endif %}</p>
                             <p><strong>Nilai K:</strong> {{ nilaik }}</p>
                         </div>
                         <button class="bg-blue-800 text-[#FFF] font-bold rounded px-4 py-2 mt-2 sm:mt-0" onclick="modal()">Ubah Parameter</button>
@@ -113,8 +113,8 @@ Process
             <div class="mb-4">
                 <label class="block text-[#9CA3AF] text-sm font-bold mb-2" for="model">Model</label>
                 <select class="text-base p-2 border border-[#9CA3AF] rounded-lg focus:outline-none focus:border-indigo-500 appearance-none w-full bg-[#202225]" name="model" id="model">
-                    <option value="1" {% if model == 1 %} selected {% endif %}>k-Means</option>
-                    <option value="2" {% if model == 2 %} selected {% endif %}>Median</option>
+                    <option value="1" {% if model == "1" %} selected {% endif %}>k-Means</option>
+                    <option value="2" {% if model == "2" %} selected {% endif %}>k-Median</option>
                 </select>
             </div>
             
@@ -136,9 +136,9 @@ Process
     }
 
     function submitModalForm() {
-        let form = document.getElementById('modalForm');
-        let new_nilaik = document.getElementById('nilaik').value;
-
+        const form = document.getElementById('modalForm');
+        const new_nilaik = document.getElementById('nilaik').value;
+        const new_model = document.getElementById('model').value
         if (parseInt(new_nilaik) === 1) {
             Swal.fire({
                 icon: 'warning',
@@ -150,19 +150,11 @@ Process
                 }
             });
         } else {
-            let formData = new FormData(form);
-            let model = formData.get('model');
-            let file = formData.get('file');
-            let nilaik = formData.get('nilaik');
-            let url;
-
-            if (!formData.get('fitur1') && !formData.get('fitur2')) {
-                url = "/process?model=" + model + "&file=" + file + "&nilaik=" + new_nilaik;
-            } else {
-                let fitur1 = formData.get('fitur1');
-                let fitur2 = formData.get('fitur2');
-                url = "/process?model=" + model + "&file=" + file + "&nilaik=" + new_nilaik + "&fitur1=" + fitur1 + "&fitur2=" + fitur2;
-            }
+            const formData = new FormData(form);
+            const file = formData.get('file');
+            const fitur1 = formData.get('fitur1');
+            const fitur2 = formData.get('fitur2');
+            const url = `/process?model=${new_model}&file=${file}&nilaik=${new_nilaik}` + (fitur1 && fitur2 ? `&fitur1=${fitur1}&fitur2=${fitur2}` : '');
             window.location.href = url;
         }
     }
